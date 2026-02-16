@@ -3,68 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HVAC Business Voice Assistant</title>
+    <title>Casey Mechanical Voice Assistant</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; background: #f4f4f9; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        textarea { width: 100%; height: 150px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 20px; font-size: 16px; }
-        .controls { display: grid; gap: 10px; margin-bottom: 20px; }
-        button { background: #007bff; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; width: 100%; }
-        button:hover { background: #0056b3; }
-        .download-btn { background: #28a745; margin-top: 10px; }
-        .download-btn:hover { background: #218838; }
-        select, input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
+        body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
+        textarea { width: 90%; height: 150px; margin-bottom: 10px; padding: 10px; border-radius: 8px; }
+        button { padding: 15px 30px; font-size: 18px; cursor: pointer; border-radius: 8px; border: none; margin: 5px; }
+        .speak-btn { background-color: #007bff; color: white; }
+        .job-btn { background-color: #28a745; color: white; }
+        .template-btn { background-color: #6c757d; color: white; font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>HVAC Voice Assistant</h2>
-        <p>Convert text to speech and download the audio file:</p>
-        <textarea id="text-input">Hello, your electrical repair is scheduled for tomorrow at 10 AM. Please ensure access to the main panel.</textarea>
-
-        <div class="controls">
-            <label for="voice-select">Voice:</label>
-            <select id="voice-select"></select>
-
-            <label for="rate">Speed:</label>
-            <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
-        </div>
-
-        <button onclick="speakText()">Play Audio</button>
-        <button class="download-btn" onclick="downloadAudio()">Download (Simulated)</button>
-        <p style="font-size: 12px; color: #666; margin-top: 10px;">Note: Browser security prevents direct MP3 saving without a server; use a screen recorder or 'Save as' if available in your browser's media player.</p>
+    <h1>Casey Mechanical Voice Assistant</h1>
+    
+    <div>
+        <button class="template-btn" onclick="loadText('HVAC Repair: Check capacitor and contactor on condenser unit.')">HVAC Script</button>
+        <button class="template-btn" onclick="loadText('Electrical: Inspect main panel for loose neutrals and burnt breakers.')">Electrical Script</button>
     </div>
 
+    <textarea id="text-to-speak" placeholder="Paste job details here..."></textarea><br>
+    
+    <button class="speak-btn" onclick="speakText()">Play Audio</button>
+    <button class="job-btn" onclick="window.open('https://docs.google.com/forms/d/1VIuYYVUn2qHqrAkPwSASltjDH1-ABQS2fhjj19InkhI/viewform', '_blank')">Open Intake Form</button>
+
     <script>
-        const synth = window.speechSynthesis;
-        const voiceSelect = document.getElementById('voice-select');
-        const textInput = document.getElementById('text-input');
-        const rateInput = document.getElementById('rate');
-
-        function loadVoices() {
-            const voices = synth.getVoices();
-            voiceSelect.innerHTML = voices
-                .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
-                .join('');
-        }
-
-        loadVoices();
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = loadVoices;
-        }
-
+        function loadText(msg) { document.getElementById('text-to-speak').value = msg; }
         function speakText() {
-            if (synth.speaking) return;
-            const utterThis = new SpeechSynthesisUtterance(textInput.value);
-            const selectedVoice = voiceSelect.value;
-            const voices = synth.getVoices();
-            utterThis.voice = voices.find(v => v.name === selectedVoice);
-            utterThis.rate = rateInput.value;
-            synth.speak(utterThis);
-        }
-
-        function downloadAudio() {
-            alert("To save this as an MP3 for your automated system, you can use a free tool like 'Audacity' to record the system audio, or I can help you set up a Python script that saves files directly!");
+            const text = document.getElementById('text-to-speak').value;
+            const utterance = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(utterance);
         }
     </script>
 </body>
